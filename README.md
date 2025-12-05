@@ -68,3 +68,49 @@ raw_df.write \
     .save(TARGET_PATH)
 
 print("Raw data ingestion complete.")
+
+
+
+
+
+1.# PySpark Utility Functions (utils.py)
+This file contains reusable functions designed to enforce data standardization and cleansing across various ETL jobs.
+
+Purpose: Promotes code reuse and consistency for repetitive data manipulation tasks.
+
+Key Functions Included:
+
+Timestamp Standardization: Converts timestamp columns to a consistent target format.
+
+String Cleansing: Removes common special characters and excess whitespace from text fields.
+
+Dynamic Column Renaming: Provides a centralized function for schema mapping.
+
+2.# Data Quality and Validation (data_quality_checks.py)
+This PySpark script addresses the requirements for data validation and data quality checks on campaign performance data.
+
+Purpose: Ensures data integrity by identifying null values, invalid metrics (e.g., negative revenue), and date anomalies.
+
+Methodology: Utilizes PySpark aggregation functions to count specific issues (e.g., sum(when(col(c).isNull(), 1))) across all input columns.
+
+Related Activities: Supports end-to-end data validation and data reconciliation across MDW and EDW layers.
+
+3.# Delta Lake Optimization (delta_optimization.py)
+This script implements performance tuning measures for the high-volume Delta Lake tables, aligning with the project's storage and query performance goals.
+
+Purpose: Improves query efficiency and reduces storage overhead for frequently accessed Delta tables.
+
+Key Operations:
+
+OPTIMIZE ... ZORDER BY: Applies Z-Order clustering on key columns (e.g., campaign_id, country_code) to co-locate related data, significantly speeding up query filters.
+
+VACUUM: Removes old, unreferenced data files to manage storage costs and improve file listing performance.
+
+4.# Transformation and Load (transform_load.py)
+This script handles the initial ingestion of raw data.
+
+Source: Reads raw campaign data from a SQL Server table using JDBC.
+
+Target: Writes the raw data to the Delta Lake Raw Zone path (/mnt/raw/martech/campaign_data).
+
+Mode: Uses overwrite mode for loading raw data.
